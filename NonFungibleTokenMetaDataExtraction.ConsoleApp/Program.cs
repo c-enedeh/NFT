@@ -1,7 +1,15 @@
-﻿using NonFungibleTokenMetaDataExtraction.Application.Model;
+﻿using Microsoft.Extensions.Configuration;
+using NonFungibleTokenMetaDataExtraction.Application.Model;
 using NonFungibleTokenMetaDataExtraction.Application.Services;
 
-var client = NonFungibleTokenClient.GetNonFungibleTokenClient("4441cc2988c64bc1bc3029f55d39dbe6");
+
+IConfiguration config = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables()
+    .Build();
+
+var apiKey = config.GetRequiredSection("ApiKey").Value;
+var client = NonFungibleTokenClient.GetNonFungibleTokenClient(apiKey);
 
 while (true)
 {
