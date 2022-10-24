@@ -1,7 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
 using NonFungibleTokenMetaDataExtraction.Application.Model;
 using NonFungibleTokenMetaDataExtraction.Application.Services;
+using Serilog;
 
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
+
+Log.Information("Starting Non Fungible Token (NFT) Metadata Extraction app");
 
 IConfiguration config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
@@ -9,7 +16,22 @@ IConfiguration config = new ConfigurationBuilder()
     .Build();
 
 var apiKey = config.GetRequiredSection("ApiKey").Value;
-var client = NonFungibleTokenClient.GetNonFungibleTokenClient(apiKey);
+Log.Information("Retrieve Api key from appsettings file successfully");
+
+NonFungibleTokenClient client;
+try
+{
+    Log.Information("Fetching NFT client information");
+    client = NonFungibleTokenClient.GetNonFungibleTokenClient(apiKey);
+    Log.Information("Fetched NFT client information successfully");
+
+}
+catch (Exception exception)
+{
+    Log.Error(exception,"An error happened while fetching NFT client information");
+    throw;
+}
+
 
 while (true)
 {
@@ -23,7 +45,16 @@ while (true)
         TokenIndeX = index
     };
 
-    var model = await client.GetNonFungibleTokenModel(request);
-    Console.WriteLine(model);
-    Console.ReadLine();
+    try
+    {
+        Log.Information("Fetching NFT client metadata object information");
+        var model = await client.GetNonFungibleTokenModel(request);
+        Log.Information("Fetched NFT client metadata object information successfully");
+        Console.WriteLine(model);
+        Console.ReadLine();
+    }
+    catch (Exception exception)
+    {
+        Log.Error(exception,"An error happened while fetching NFT metadata object");
+    }
 }
