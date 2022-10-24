@@ -14,4 +14,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NonFungibleTokenMetaDataExtraction.Application\NonFungibleTokenMetaDataExtraction.Application.csproj" />
+  </ItemGroup>
+
 </Project>
